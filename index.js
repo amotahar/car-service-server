@@ -16,7 +16,7 @@ app.use(express.json());
 
 
 // this is from the Mongodb.
-const uri = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASSWORD}@cluster0.ddkgs5g.mongodb.net/?retryWrites=true&w=majority`;
+const uri = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASS}@cluster0.vfeao8o.mongodb.net/?retryWrites=true&w=majority`;
 
 const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true, serverApi: ServerApiVersion.v1 });
 
@@ -77,7 +77,7 @@ async function run() {
 
       app.get('/services/:id', async (req, res) => {
          const id = req.params.id;
-         const query = { _id: ObjectId(id) };
+         const query = { _id: new ObjectId(id) };
          const service = await serviceCollection.findOne(query);
          res.send(service);
       });
@@ -86,12 +86,12 @@ async function run() {
 
       // orders api
       app.get('/orders', verifyJWT, async (req, res) => {
-         const decoded = req.decoded;
-         console.log('inside orders api', decoded)
+         // const decoded = req.decoded;
+         // console.log('inside orders api', decoded)
 
-         if (decoded.email !== req.query.email) {
-            res.status(403).send({ message: 'unauthorized access' })
-         }
+         // if (decoded.email !== req.query.email) {
+         //    res.status(403).send({ message: 'unauthorized access' })
+         // }
 
          let query = {};
 
@@ -118,7 +118,7 @@ async function run() {
       app.patch('/orders/:id', verifyJWT, async (req, res) => {
          const id = req.params.id;
          const status = req.body.status
-         const query = { _id: ObjectId(id) }
+         const query = { _id: new ObjectId(id) }
          const updatedDoc = {
             $set: {
                status: status
@@ -135,7 +135,7 @@ async function run() {
       //Delete Api
       app.delete('/orders/:id', verifyJWT, async (req, res) => {
          const id = req.params.id;
-         const query = { _id: ObjectId(id) };
+         const query = { _id: new ObjectId(id) };
          const result = await orderCollection.deleteOne(query);
          res.send(result);
       })
